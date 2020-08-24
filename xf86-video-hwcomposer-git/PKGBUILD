@@ -2,7 +2,7 @@
 
 pkgname=xf86-video-hwcomposer-git
 _pkgname=xf86-video-hwcomposer
-pkgver=r134.192402c
+pkgver=r141.85ece3e
 pkgrel=1
 pkgdesc='Xorg DDX driver to renderer through HWComposer API on Android devices via libhybris'
 url='https://github.com/NotKit/xf86-video-hwcomposer'
@@ -10,10 +10,10 @@ arch=(i686 x86_64 armv7h aarch64)
 license=()
 conflicts=(xf86-video-hwcomposer)
 provides=(xf86-video-hwcomposer)
-depends=(xorg-server xproto fontsproto randrproto renderproto drihybris glamor-hybris)
+depends=(xorg-server xorgproto drihybris glamor-hybris)
 makedepends=(xorg-server-devel git)
 groups=(xorg-drivers xorg)
-source=('git+https://github.com/NotKit/xf86-video-hwcomposer')
+source=('git+https://github.com/luka177/xf86-video-hwcomposer')
 sha256sums=('SKIP')
 
 pkgver() {
@@ -28,8 +28,8 @@ prepare() {
 
 build() {
   cd ${_pkgname}
-  export CPLUS_INCLUDE_PATH=/opt/android/include:/opt/android/hybris/include
-  export C_INCLUDE_PATH=/opt/android/include:/opt/android/hybris/include
+  export CPLUS_INCLUDE_PATH=/opt/android/include:/opt/android/hybris/include:/usr/include/android
+  export C_INCLUDE_PATH=/opt/android/include:/opt/android/hybris/include:/usr/include/android
   ./configure --prefix=/usr
   make
 }
