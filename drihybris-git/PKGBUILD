@@ -2,7 +2,7 @@
 
 pkgname=drihybris-git
 _pkgname=drihybris
-pkgver=r1.fbaf21e
+pkgver=r3.6bc4f4a
 pkgrel=1
 pkgdesc='DRIHYBRIS extension (based on DRI3) for buffer sharing on libhybris-based adaptations'
 url='https://github.com/NotKit/drihybris'
@@ -10,7 +10,7 @@ arch=(i686 x86_64 armv7h aarch64)
 license=()
 conflicts=(drihybris)
 provides=(drihybris)
-depends=(xorg-server xproto fontsproto randrproto renderproto)
+depends=(xorg-server xorgproto)
 makedepends=(xorg-server-devel git)
 groups=(xorg-drivers xorg)
 source=('git+https://github.com/NotKit/drihybris.git')
