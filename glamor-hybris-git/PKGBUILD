@@ -1,40 +1,38 @@
-# Maintainer: Ivan Semkin (ivan at semkin dot ru)
-
-pkgname=glamor-hybris-git
 _pkgname=glamor-hybris
-pkgver=r852.5689e03
+pkgname=$_pkgname-git
+pkgver=r855.d62d256
 pkgrel=1
-pkgdesc='Glamor Xserver 2D acceleration, modified to work with libhybris drivers'
-url='https://github.com/NotKit/glamor-hybris'
-arch=(i686 x86_64 armv7h aarch64)
-license=()
-conflicts=(glamor-hybris)
-provides=(glamor-hybris)
-depends=(xorg-server xproto fontsproto randrproto renderproto)
-makedepends=(xorg-server-devel git)
-groups=(xorg-drivers xorg)
-source=('git+https://github.com/NotKit/glamor-hybris')
-sha256sums=('SKIP')
+pkgdesc="glamor Xserver 2D acceleration modified to work with libhybris drivers"
+url="https://github.com/NotKit/glamor-hybris"
+arch=('x86_64' 'aarch64')
+license=('MIT')
+depends=('libepoxy' 'drihybris' 'libhybris' 'libxfont2')
+makedepends=('git' 'pixman' 'xorg-server-devel' 'drihybrisproto')
+provides=("$_pkgname")
+source=('git+https://github.com/luka177/glamor-hybris')
+md5sums=('SKIP')
 
 pkgver() {
-  cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)"
-}
-
-prepare() {
-  cd ${_pkgname}
-  NOCONFIGURE=1 ./autogen.sh
+	cd "$_pkgname"
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 build() {
-  cd ${_pkgname}
-  export CPLUS_INCLUDE_PATH=/opt/android/include:/opt/android/hybris/include
-  export C_INCLUDE_PATH=/opt/android/include:/opt/android/hybris/include
-  ./configure --prefix=/usr
-  make
+	cd "$_pkgname"
+	export LDFLAGS="$LDFLAGS -Wl,-z,lazy"
+	export CPPFLAGS="$CPPFLAGS -I/usr/include/android -I/usr/include/libdrm"
+
+	./autogen.sh \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--enable-glamor-gles2
+	make
 }
 
 package() {
-  cd ${_pkgname}
-  make DESTDIR="${pkgdir}" install
+	cd "$_pkgname"
+	make DESTDIR="$pkgdir" install
+	mv "$pkgdir/usr/include/xorg/glamor.h" "$pkgdir/usr/include/xorg/glamor-hybris.h"
+	install -Dm644 COPYING "$pkgdir"/usr/share/licenses/$_pkgname/COPYING
 }
